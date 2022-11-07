@@ -1,6 +1,4 @@
 #!/home/antoniar/python3.6_env/bin/python
-# #!/home/antoniar/TraP_Develop_Env/bin/python
-# #!/home/antoniar/trigLOFARenv/bin/python
 
 #################### WARNING: Turn off sending triggers when testing!!!!!!!!!!!!!
 
@@ -10,7 +8,6 @@ import os
 from datetime import datetime
 from datetime import timedelta
 from datetime import time
-#import tkp.utility.coordinates as tkpcoords
 import logging
 import sys
 import six
@@ -18,7 +15,6 @@ import voeventparse
 import pandas
 import requests
 import pytz
-#import xml.etree.ElementTree as ET
 from lxml import etree as ET
 import lofar_maintenance
 
@@ -31,7 +27,6 @@ import astropy.units as u
 from astropy.time import Time
 from astropy.coordinates import SkyCoord, EarthLocation, AltAz
 
-#from fourpiskytools.notify import Notifier
 
 ################# Runing the 4PiSky Broker #################
 # This script is called when the broker receives a VOEvent from the 4PiSky Boker.
@@ -51,15 +46,14 @@ LOFARlocation = EarthLocation(lat=52.9088*u.deg,lon=6.8689*u.deg,height=0.*u.m)
 CalObsT = 10.
 delaymins=10.
 
-Name = "Antonia Rowlinson"
-username = 'antoniar'
-email = "rowlinson@astron.nl"
-phoneNumber = "799"
+Name = "Name"
+username = 'username'
+email = "email@adress"
+phoneNumber = "tel"
 Affiliation = "ASTRON"
-#ProjectCodeSGRBs = 'LC18_023'
-# ProjectCodeXRFs = 'LC17_001'
-#
-ProjectCodeSGRs = 'LC18_023'
+ProjectCodeSGRBs = 'LC'
+ProjectCodeXRFs = 'LC'
+ProjectCodeSGRs = 'LC'
 GRB_trig_dur = 2.
 Rate_Signif = 10.
 template = 'sgrb_template.xml'
@@ -166,20 +160,6 @@ def handle_voevent(v):
         logger.info('is SGR burst')
         RA, Dec, time, parameters, ivorn = handle_grb(v)
 
-        # f= open(sgrlist,"a+")
-        # if str(parameters[None]['TrigID']['value']) in f.read():
-        #     logger.info("SGR already processed " + parameters[None]['TrigID']['value'])
-        #     f.close()
-        #     return
-        # else:
-        #     logger.info('TrigID: '+format(parameters[None]['TrigID']['value'])+','+format(time)+','+str(RA)+','+str(Dec)+','+format(parameters[None]['Integ_Time']['value'])+','+format(parameters[None]['Rate_Signif']['value']))
-        #
-        #     f.write(str(parameters[None]['TrigID']['value'])+','+format(parameters[None]['Integ_Time']['value'])+','+format(parameters[None]['Rate_Signif']['value'])+','+str(time)+'\n')
-        #     f.close()
-        #     logger.info('Written data to: '+sgrlist)
-
-
-
         now = datetime.utcnow().replace(tzinfo=pytz.utc)
         logger.info(now)
         logger.info(time)
@@ -192,8 +172,6 @@ def handle_voevent(v):
         else:
             logger.info('Failed time check')
 
-        # Insert code here for SGR triggers, recommend creating a new function like filterburst, much of that
-        # function can be copied directly with new filtering code.
 
     elif is_swift_pointing(v):
         handle_pointing(v)
@@ -411,13 +389,10 @@ def horizon(time,RA,Dec):
             az0=calcAltAz(time+timedelta(minutes=MaxDwell),RA,Dec) # altitude at max dwell time
             logger.info('TrigID: '+format(parameters[None]['TrigID']['value']).replace("-", "0")+', az0')
             az0b=calcAltAz(time+timedelta(minutes=MaxDwell),RA,Dec) # altitude at min dwell time
-            #print az0blogger.info('TrigID: '+format(parameters[None]['TrigID']['value']).replace("-", "0")+', az0b')
             az2=calcAltAz(time+timedelta(minutes=(MaxDwell+ObsMax)),RA,Dec) # altitude at maximum end time
             logger.info('TrigID: '+format(parameters[None]['TrigID']['value']).replace("-", "0")+', az2')
             az1=calcAltAz(time+timedelta(minutes=(MaxDwell+ObsMin)),RA,Dec) # altitude at minimum end time
             logger.info('TrigID: '+format(parameters[None]['TrigID']['value']).replace("-", "0")+', az1')
-
-            #print AltCut
 
             if az0<AltCut: # the source remains below minimum elevation by the max dwell time
                 return 0
@@ -452,7 +427,6 @@ def find_cal(time,RA, Dec, index):
     calibrators=pandas.read_csv('calibrators.csv',sep=',',header=0)
     separation=648000.
     for index2, cal in calibrators.iterrows():
-        #septmp = tkpcoords.angsep(RA, Dec, float(cal.ra), float(cal.dec))
         c1 = SkyCoord(RA,Dec,unit='deg')
         c2 = SkyCoord(float(cal.ra),float(cal.dec),unit='deg')
         septmp = c1.separation(c2)
